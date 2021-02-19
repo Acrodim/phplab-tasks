@@ -29,7 +29,33 @@ foreach (require_once('../web/airports.php') as $item) {
         $cityId = $city['id'];
     }
 
-    // TODO States
+    // States
+    // To check if state with this name exists in the DB we need to SELECT it first
+    $sth = $pdo->prepare('SELECT id FROM states WHERE name = :name');
+    $sth->setFetchMode(\PDO::FETCH_ASSOC);
+    $sth->execute(['name' => $item['state']]);
+    $state = $sth->fetch();
 
-    // TODO Airports
+    // If result is empty - we need to INSERT city
+    if (!$state) {
+        $sth = $pdo->prepare('INSERT INTO states (name) VALUES (:name)');
+        $sth->execute(['name' => $item['state']]);
+
+        // We will use this variable to INSERT airport
+        $stateId = $pdo->lastInsertId();
+    } else {
+        // We will use this variable to INSERT airport
+        $stateId = $state['id'];
+    }
+
+    // Airports
+    $sth = $pdo->prepare('INSERT INTO airports (name, code, city_id, state_id, address, timezone) 
+                                   VALUES (:name, :code, :city_id, :state_id, :address, :timezone)');
+    $sth->bindParam(':name', $item['name']);
+    $sth->bindParam(':code', $item['code']);
+    $sth->bindParam(':city_id', $cityId);
+    $sth->bindParam(':state_id', $stateId);
+    $sth->bindParam(':address', $item['address']);
+    $sth->bindParam(':timezone', $item['timezone']);
+    $sth->execute();
 }
