@@ -55,8 +55,8 @@ CREATE TABLE `airports` (
 	`address` VARCHAR(50) NOT NULL COLLATE 'utf8_general_ci',
 	`timezone` VARCHAR(50) NOT NULL COLLATE 'utf8_general_ci',
 	PRIMARY KEY (`id`),
-	FOREIGN KEY (`city_id`) REFERENCES cities (`id`),
-	FOREIGN KEY (`state_id`) REFERENCES states (`id`)
+	FOREIGN KEY (`city_id`) REFERENCES `cities`(`id`) ON DELETE RESTRICT ON UPDATE NO ACTION,
+    FOREIGN KEY (`state_id`) REFERENCES `states`(`id`) ON DELETE RESTRICT ON UPDATE NO ACTION
 );
 SQL;
 $pdo->exec($sql);
