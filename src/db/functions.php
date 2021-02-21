@@ -1,16 +1,6 @@
 <?php
 
 /**
- * The function connects to DB
- *
- * @return object PDO
- */
-function connection()
-{
-    $pdo = new PDO('mysql:host=localhost;dbname=hometask', 'root', 'root');
-    return $pdo;
-}
-/**
  * The $airports variable contains array of arrays of airports (see airports.php)
  * What can be put instead of placeholder so that function returns the unique first letter of each airport name
  * in alphabetical order
@@ -21,7 +11,8 @@ function connection()
  */
 function getUniqueFirstLetters()
 {
-    $pdo = connection();
+    global $pdo;
+
     $sth = $pdo->prepare('SELECT DISTINCT (LEFT(name, 1)) AS firstLetter FROM airports ORDER BY firstLetter');
     $sth->execute();
     return $sth->fetchAll(PDO::FETCH_COLUMN);
@@ -75,7 +66,7 @@ function getLink($get, array $link = [])
  * @param array $get
  * @return array
  */
-function paginationFilteringSorting(int $currentPage, int $from, int $airportsPerPage, $get)
+function processRequest(int $currentPage, int $from, int $airportsPerPage, $get)
 {
     $firstLetter = "{$get['filter_by_first_letter']}%";
     $filterByState = "{$get['filter_by_state']}%";
@@ -86,7 +77,7 @@ function paginationFilteringSorting(int $currentPage, int $from, int $airportsPe
         $sort = '';
     }
 
-    $pdo = connection();
+    global $pdo;
 
     $sth = $pdo->prepare('SELECT COUNT(*) AS count, a.name, a.code, s.name AS state, c.name AS city, a.address,
                                    a.timezone

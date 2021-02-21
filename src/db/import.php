@@ -9,7 +9,9 @@
 /** @var \PDO $pdo */
 require_once './pdo_ini.php';
 
-foreach (require_once('../web/airports.php') as $item) {
+$airports = require_once('../web/airports.php');
+
+foreach ($airports as $item) {
     // Cities
     // To check if city with this name exists in the DB we need to SELECT it first
     $sth = $pdo->prepare('SELECT id FROM cities WHERE name = :name');

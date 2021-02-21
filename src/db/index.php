@@ -1,5 +1,8 @@
 <?php
 
+/** @var \PDO $pdo */
+require_once './pdo_ini.php';
+
 require_once './functions.php';
 
 $get = $_GET;
@@ -38,7 +41,7 @@ $airportsPerPage = 5;
 
 $from = ($currentPage - 1) * $airportsPerPage;
 
-$airports = paginationFilteringSorting($currentPage, $from, $airportsPerPage, $get);
+$airports = processRequest($currentPage, $from, $airportsPerPage, $get);
 
 ?>
 <!doctype html>
